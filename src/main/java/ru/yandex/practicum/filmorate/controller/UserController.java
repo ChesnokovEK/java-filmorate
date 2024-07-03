@@ -32,9 +32,14 @@ public class UserController {
                     "Текущее количество пользователей в базе: {}", user.getId(), users.size());
             throw new AlreadyExistsException("Пользователь с таким id уже существует");
         }
+
         userValidationTest(user);
-        user.setId(userNextId);
-        userNextId++;
+
+        if (user.getId() == null) {
+            user.setId(userNextId);
+            userNextId++;
+        }
+
         users.put(user.getId(), user);
         log.info("Пользователь с email {}, логином {} и id {} был успешно добавлен. Текущее количество " +
                 "пользователей в базе: {}", user.getEmail(), user.getLogin(), user.getId(), users.size());
@@ -78,7 +83,7 @@ public class UserController {
 
     private boolean isIdExists(User user) {
         for (User userInList : findAll()) {
-            if (user.getId() == userInList.getId()) {
+            if (Objects.equals(user.getId(), userInList.getId())) {
                 return true;
             }
         }

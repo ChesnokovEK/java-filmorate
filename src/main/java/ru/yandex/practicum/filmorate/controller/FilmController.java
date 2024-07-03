@@ -32,9 +32,14 @@ public class FilmController {
                     "Текущее количество фильмов в базе: {}", film.getId(), films.size());
             throw new AlreadyExistsException("Фильм с таким id уже существует");
         }
+
         filmValidationTest(film);
-        film.setId(filmNextId);
-        filmNextId++;
+
+        if (film.getId() == null) {
+            film.setId(filmNextId);
+            filmNextId++;
+        }
+
         films.put(film.getId(), film);
         log.info("Фильм с названием {} и id {} был успешно добавлен. Текущее количество фильмов в базе: {}",
                 film.getName(), film.getId(), films.size());
@@ -82,7 +87,7 @@ public class FilmController {
 
     private boolean isIdExists(Film film) {
         for (Film filmInList : findAll()) {
-            if (film.getId() == filmInList.getId()) {
+            if (Objects.equals(film.getId(), filmInList.getId())) {
                 return true;
             }
         }

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class Film {
-    private int id;
+    private Integer id;
     @NotBlank(message = "Название фильма не может быть пустым")
     private String name;
     @Size(max = 200, message = "Длина описания фильма не может превышать 200 символов")
