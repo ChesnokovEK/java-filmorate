@@ -13,11 +13,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Film {
     private int id;
-    @NotBlank
+    @NotBlank(message = "Название фильма не может быть пустым")
     private String name;
-    @Size(max = 200)
+    @Size(max = 200, message = "Длина описания фильма не может превышать 200 символов")
     private String description;
     private LocalDate releaseDate;
-    @Positive
+    @Positive(message = "Продолжительность фильма должна быть больше 0")
     private long duration;
 }

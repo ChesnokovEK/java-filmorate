@@ -57,7 +57,7 @@ public class UserController {
     }
 
     private void userValidationTest(User user) {
-         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.info("Ошибка: некорректный email. Указанный email: {}", user.getEmail());
             throw new ValidationException("Некорректный адрес электронной почты");
         }
