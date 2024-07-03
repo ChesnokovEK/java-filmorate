@@ -17,7 +17,7 @@ import java.util.*;
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
-    private int filmNextId = 0;
+    private int filmNextId = 1;
 
     @GetMapping
     public List<Film> findAll() {
