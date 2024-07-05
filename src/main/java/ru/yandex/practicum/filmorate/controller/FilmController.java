@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.AlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
@@ -14,9 +13,9 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/films")
+@Slf4j
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
-    private static final Logger log = LoggerFactory.getLogger(FilmController.class);
     private int filmNextId = 1;
 
     @GetMapping
@@ -63,12 +62,13 @@ public class FilmController {
 
     private void filmValidationTest(Film film) {
         final LocalDate FIRST_FILM_RELEASE_DATE = LocalDate.of(1895, 3, 22);
+        final int MAX_DESCRIPTION_LENGTH = 200;
 
         if (film.getName() == null || film.getName().isBlank()) {
             log.info("Ошибка названия фильма. Название фильма: {}", film.getName());
             throw new ValidationException("Название фильма не может быть пустым");
         }
-        if (film.getDescription().length() > 200) {
+        if (film.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
             log.info("Ошибка описания фильма. Текущая длина описания: {}",
                     film.getDescription().length());
             throw new ValidationException("Превышена максимально допустимая длина описания фильма");
@@ -86,11 +86,6 @@ public class FilmController {
     }
 
     private boolean isIdExists(Film film) {
-        for (Film filmInList : findAll()) {
-            if (Objects.equals(film.getId(), filmInList.getId())) {
-                return true;
-            }
-        }
-        return false;
+        return films.containsKey(film.getId());
     }
 }

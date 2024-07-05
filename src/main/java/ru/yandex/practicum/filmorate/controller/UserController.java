@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.AlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
@@ -11,12 +10,13 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private int userNextId = 1;
 
     @GetMapping
@@ -62,7 +62,9 @@ public class UserController {
     }
 
     private void userValidationTest(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+        final Pattern EMAIL_PATTERN = Pattern.compile("^(?=.{1,64}@)[A-Za-z\\d_-]+(\\\\.[A-Za-z\\d_-]+)*@[^-][A-Za-z\\d-]+(\\\\.[A-Za-z\\d-]+)*(\\\\.[A-Za-z]{2,})$");
+
+        if (user.getEmail() == null || user.getEmail().isBlank() || !EMAIL_PATTERN.matcher(user.getEmail()).matches()) {
             log.info("Ошибка: некорректный email. Указанный email: {}", user.getEmail());
             throw new ValidationException("Некорректный адрес электронной почты");
         }
@@ -82,11 +84,6 @@ public class UserController {
     }
 
     private boolean isIdExists(User user) {
-        for (User userInList : findAll()) {
-            if (Objects.equals(user.getId(), userInList.getId())) {
-                return true;
-            }
-        }
-        return false;
+        return users.containsKey(user.getId());
     }
 }
