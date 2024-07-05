@@ -62,9 +62,9 @@ public class UserController {
     }
 
     private void userValidationTest(User user) {
-        final Pattern EMAIL_PATTERN = Pattern.compile("^(?=.{1,64}@)[A-Za-z\\d_-]+(\\\\.[A-Za-z\\d_-]+)*@[^-][A-Za-z\\d-]+(\\\\.[A-Za-z\\d-]+)*(\\\\.[A-Za-z]{2,})$");
+        final Pattern EMAIL_PATTERN_RFC_5322 = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
 
-        if (user.getEmail() == null || user.getEmail().isBlank() || !EMAIL_PATTERN.matcher(user.getEmail()).matches()) {
+        if (user.getEmail() == null || user.getEmail().isBlank() || !EMAIL_PATTERN_RFC_5322.matcher(user.getEmail()).matches()) {
             log.info("Ошибка: некорректный email. Указанный email: {}", user.getEmail());
             throw new ValidationException("Некорректный адрес электронной почты");
         }
