@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,9 +14,11 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
         this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
     }
 
     public List<Film> findAll() {
@@ -56,12 +60,12 @@ public class FilmService {
     }
 
     private void checkFilmAndUserId(Integer filmId, Integer userId) {
-        if (filmId == null || userId == null) {
-            throw new DoesNotExistsException("Введен не существующий идентификатор фильма либо пользователя");
+        if (filmStorage.findById(filmId) == null) {
+            throw new DoesNotExistsException("Введен не существующий идентификатор фильма");
         }
 
-        if (filmId < 1 || userId < 1) {
-            throw new DoesNotExistsException("Введен не существующий идентификатор фильма либо пользователя");
+        if (userStorage.findById(userId) == null) {
+            throw new DoesNotExistsException("Введен не существующий идентификатор пользователя");
         }
     }
 }
