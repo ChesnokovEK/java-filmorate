@@ -1,20 +1,18 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.Storage;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    private final UserStorage userStorage;
-
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
+    private final Storage<User> userStorage;
 
     public List<User> findAll() {
         return new ArrayList<>(userStorage.findAll());

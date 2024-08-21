@@ -1,24 +1,21 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.Storage;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FilmService {
 
-    private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
-
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
-        this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
-    }
+    private final Storage<Film> filmStorage;
+    private final Storage<User> userStorage;
 
     public List<Film> findAll() {
         return filmStorage.findAll();
@@ -52,8 +49,9 @@ public class FilmService {
         if (filmStorage.findAll().isEmpty()) {
             throw new DoesNotExistsException("Фильмов в базе пока нет");
         }
+
         return filmStorage.findAll().stream()
-                .sorted((f0, f1) -> -1 * (f0.getLikes().size() - f1.getLikes().size()))
+                .sorted((f0, f1) -> (f1.getLikes().size() - f0.getLikes().size()))
                 .limit(count)
                 .collect(Collectors.toList());
     }
