@@ -6,6 +6,9 @@ import ru.yandex.practicum.filmorate.exception.AlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +21,7 @@ public class FilmControllerTest {
 
     @BeforeEach
     void setUp() {
-        filmController = new FilmController();
+        filmController = new FilmController(new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage()));
     }
 
     @Test
@@ -41,11 +44,11 @@ public class FilmControllerTest {
                 "Praesent mollis arcu in mollis aliquet. Nunc ligula.";
         Film film1 = new Film(0, "Test", moreThan200Chars,
                 LocalDate.of(2000, 1, 1), 120);
-        Film film2 = new Film(1, null, "TestFilm2Description",
+        Film film2 = new Film(0, null, "TestFilm2Description",
                 LocalDate.of(2000, 1, 1), 120);
-        Film film3 = new Film(2, "TestFilm3", "TestFilm3Description",
+        Film film3 = new Film(0, "TestFilm3", "TestFilm3Description",
                 LocalDate.of(1000, 1, 1), 120);
-        Film film4 = new Film(3, "TestFilm4", "TestFilm4Description",
+        Film film4 = new Film(0, "TestFilm4", "TestFilm4Description",
                 LocalDate.of(2000, 1, 1), 0);
 
         assertThrows(ValidationException.class, () -> filmController.createFilm(film1), "Должен выбросить исключение");

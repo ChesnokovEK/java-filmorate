@@ -6,6 +6,8 @@ import ru.yandex.practicum.filmorate.exception.AlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -18,7 +20,7 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        userController = new UserController();
+        userController = new UserController(new UserService(new InMemoryUserStorage()));
     }
 
     @Test
@@ -40,13 +42,13 @@ public class UserControllerTest {
     void userValidationTest() {
         User user1 = new User(0, null, "testUserLogin",
                 "Foo Bar", LocalDate.of(2000, 1, 1));
-        User user2 = new User(1, "testtestmail.test", "testUserLogin",
+        User user2 = new User(0, "testtestmail.test", "testUserLogin",
                 "Foo Bar", LocalDate.of(2000, 1, 1));
-        User user3 = new User(2, "test@testmail.test", null,
+        User user3 = new User(0, "test@testmail.test", null,
                 "Foo Bar", LocalDate.of(2000, 1, 1));
-        User user4 = new User(3, "test@testmail.test", "test UserLogin",
+        User user4 = new User(0, "test@testmail.test", "test UserLogin",
                 "Foo Bar", LocalDate.of(2000, 1, 1));
-        User user5 = new User(4, "test@testmail.test", "testUserLogin",
+        User user5 = new User(0, "test@testmail.test", "testUserLogin",
                 "Foo Bar", LocalDate.of(2222, 1, 1));
 
         assertThrows(ValidationException.class, () -> userController.createUser(user1), "Должен выбросить исключение");
