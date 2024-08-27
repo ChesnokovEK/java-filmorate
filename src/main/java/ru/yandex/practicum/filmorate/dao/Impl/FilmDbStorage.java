@@ -117,7 +117,7 @@ public class FilmDbStorage implements Storage<Film> {
     }
 
     @Override
-    public Film add( int filmId, int userId) {
+    public Film add(int filmId, int userId) {
         String sql = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
         int update = jdbcTemplate.update(sql, filmId, userId);
 
