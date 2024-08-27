@@ -8,10 +8,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -64,6 +61,24 @@ public class InMemoryFilmStorage implements Storage<Film> {
         log.info("Фильм с id {} был успешно обновлен. Текущее количество фильмов в базе: {}",
                 film.getId(), films.size());
         return film;
+    }
+
+    @Override
+    public Film add(int filmId, int userId) {
+        Set<Integer> likes = findById(filmId).getLikes();
+        likes.add(userId);
+        findById(filmId).setLikes(likes);
+
+        return update(findById(filmId));
+    }
+
+    @Override
+    public Film remove(int filmId, int userId) {
+        Set<Integer> likes = findById(filmId).getLikes();
+        likes.remove(userId);
+        findById(filmId).setLikes(likes);
+
+        return update(findById(filmId));
     }
 
     private void filmValidationTest(Film film) {

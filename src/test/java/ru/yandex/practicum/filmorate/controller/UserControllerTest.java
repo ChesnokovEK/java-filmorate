@@ -25,13 +25,25 @@ public class UserControllerTest {
 
     @Test
     void createUser() {
-        User user = new User(0, "test@testmail.test", "testUserLogin",
-                "Foo Bar", LocalDate.of(2000, 1, 1));
+        User user = User.builder()
+                .id(0)
+                .email("test@testmail.test")
+                .login("testUserLogin")
+                .name("Foo Bar")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build();
 
         assertEquals(user, userController.createUser(user));
 
-        User user1 = userController.createUser(new User(1, "test@testmail.test", "testUserLogin",
-                null, LocalDate.of(2000, 1, 1)));
+        User user1 = User.builder()
+                .id(1)
+                .email("test@testmail.test")
+                .login("testUserLogin")
+                .name("")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build();
+
+        userController.createUser(user1);
 
         assertEquals(2, userController.findAll().size(), "Неверное количество пользователей");
         assertThrows(AlreadyExistsException.class, () -> userController.createUser(user), "Должен выбросить исключение");
@@ -40,16 +52,42 @@ public class UserControllerTest {
 
     @Test
     void userValidationTest() {
-        User user1 = new User(0, null, "testUserLogin",
-                "Foo Bar", LocalDate.of(2000, 1, 1));
-        User user2 = new User(0, "testtestmail.test", "testUserLogin",
-                "Foo Bar", LocalDate.of(2000, 1, 1));
-        User user3 = new User(0, "test@testmail.test", null,
-                "Foo Bar", LocalDate.of(2000, 1, 1));
-        User user4 = new User(0, "test@testmail.test", "test UserLogin",
-                "Foo Bar", LocalDate.of(2000, 1, 1));
-        User user5 = new User(0, "test@testmail.test", "testUserLogin",
-                "Foo Bar", LocalDate.of(2222, 1, 1));
+        User user1 = User.builder()
+                .id(0)
+                .email(null)
+                .login("testUserLogin")
+                .name("Foo Bar")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build();
+        User user2 = User.builder()
+                .id(0)
+                .email("testtestmail.test")
+                .login("testUserLogin")
+                .name("Foo Bar")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build();
+        User user3 = User.builder()
+                .id(0)
+                .email("test@testmail.test")
+                .login(null)
+                .name("Foo Bar")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build();
+        User user4 = User.builder()
+                .id(0)
+                .email("test@testmail.test")
+                .login("test UserLogin")
+                .name("Foo Bar")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build();
+
+        User user5 = User.builder()
+                .id(0)
+                .email("test@testmail.test")
+                .login("testUserLogin")
+                .name("Foo Bar")
+                .birthday(LocalDate.of(2222, 1, 1))
+                .build();
 
         assertThrows(ValidationException.class, () -> userController.createUser(user1), "Должен выбросить исключение");
         assertThrows(ValidationException.class, () -> userController.createUser(user2), "Должен выбросить исключение");
@@ -60,16 +98,35 @@ public class UserControllerTest {
 
     @Test
     void userUpdateTest() {
-        userController.createUser(new User(0, "test@testmail.test", "testUserLogin",
-                "Foo Bar", LocalDate.of(2000, 1, 1)));
+        User updatable = User.builder()
+                .id(0)
+                .email("test@testmail.test")
+                .login("testUserLogin")
+                .name("Foo Bar")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build();
 
-        User nonUpdatable = new User(Integer.MAX_VALUE, "updated@testmail.test", "updatedTestUserLogin",
-                "UpdatedFoo Bar", LocalDate.of(2000, 1, 1));
+        userController.createUser(updatable);
+
+        User nonUpdatable = User.builder()
+                .id(Integer.MAX_VALUE)
+                .email("nonUpdatable@testmail.test")
+                .login("nonUpdatableTestUserLogin")
+                .name("nonUpdatableFoo Bar")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build();
 
         assertThrows(DoesNotExistsException.class, () -> userController.updateUser(nonUpdatable), "Должен выбросить исключение");
 
-        User updatedUser = userController.updateUser(new User(0, "updated@testmail.test", "updatedTestUserLogin",
-                "UpdatedFoo Bar", LocalDate.of(2000, 1, 1)));
+        User updatedUser = User.builder()
+                .id(0)
+                .email("updated@testmail.test")
+                .login("updatedTestUserLogin")
+                .name("UpdatedFoo Bar")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build();
+
+        userController.updateUser(updatedUser);
 
         assertEquals(1, userController.findAll().size(), "Неверное количество пользователей");
         assertEquals(updatedUser, userController.findAll().get(0), "Сохранен не тот пользователь");
@@ -81,8 +138,15 @@ public class UserControllerTest {
 
         assertTrue(emptyUserList.isEmpty(), "Пользователи пока не были добавлены");
 
-        User user = userController.createUser(new User(0, "test@testmail.test", "testUserLogin",
-                "Foo Bar", LocalDate.of(2000, 1, 1)));
+        User user = User.builder()
+                .id(0)
+                .email("test@testmail.test")
+                .login("testUserLogin")
+                .name("Foo Bar")
+                .birthday(LocalDate.of(2000, 1, 1))
+                .build();
+
+        userController.createUser(user);
 
         assertEquals(1, userController.findAll().size(), "Неверный размер списка пользователей");
         assertEquals(user, userController.findAll().get(0), "Сохранен не тот пользователь");

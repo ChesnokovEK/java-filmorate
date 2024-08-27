@@ -1,8 +1,9 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.Storage;
 
@@ -41,27 +42,11 @@ public class UserService {
     }
 
     public void addFriend(int user1Id, int user2Id) {
-        User user1 = userStorage.findById(user1Id);
-        User user2 = userStorage.findById(user2Id);
-
-        if (user1 == null || user2 == null) {
-            throw new DoesNotExistsException("Пользователь с запрошенным идентификатором не найден");
-        }
-
-        user1.getFriends().add(user2Id);
-        user2.getFriends().add(user1Id);
+        userStorage.add(user1Id, user2Id);
     }
 
-    public void removeFriend(int user1Id, int user2Id) {
-        User user1 = userStorage.findById(user1Id);
-        User user2 = userStorage.findById(user2Id);
-
-        if (user1 == null || user2 == null) {
-            throw new DoesNotExistsException("Пользователь с запрошенным идентификатором не найден");
-        }
-
-        user1.getFriends().remove(user2Id);
-        user2.getFriends().remove(user1Id);
+    public void removeFriend(Integer user1Id, Integer user2Id) {
+        userStorage.remove(user1Id, user2Id);
     }
 
     public List<User> findMutualFriends(int user1Id, int user2Id) {

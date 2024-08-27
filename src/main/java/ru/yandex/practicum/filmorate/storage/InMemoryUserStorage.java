@@ -8,10 +8,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -64,6 +61,25 @@ public class InMemoryUserStorage implements Storage<User> {
         log.info("Данные пользователя с id {} были успешно обновлены. Текущее количество " +
                 "пользователей в базе: {}", user.getId(), users.size());
         return user;
+    }
+
+    @Override
+    public User add(int userId, int friendId) {
+        Set<Integer> friends = findById(userId).getFriends();
+        friends.add(friendId);
+        findById(userId).setFriends(friends);
+
+        return update(findById(userId));
+    }
+
+    @Override
+    public User remove(int userId, int friendId) {
+        Set<Integer> friends = findById(userId).getFriends();
+        friends.remove(friendId);
+        findById(userId).setFriends(friends);
+
+        return update(findById(userId));
+
     }
 
     private void userValidationTest(User user) {

@@ -26,10 +26,22 @@ public class FilmControllerTest {
 
     @Test
     void createFilmTest() {
-        Film film = filmController.createFilm(new Film(0, "TestFilm", "TestFilmDescription",
-                LocalDate.of(2000, 1, 1), 120));
-        Film film1 = new Film(0, "TestFilm", "TestFilmDescription",
-                LocalDate.of(2000, 1, 1), 120);
+        Film film = Film.builder()
+                .id(0)
+                .name("TestFilm")
+                .description("TestFilmDescription")
+                .releaseDate(LocalDate.of(2000, 1, 1))
+                .duration(120)
+                .build();
+        filmController.createFilm(film);
+
+        Film film1 = Film.builder()
+                .id(0)
+                .name("TestFilm")
+                .description("TestFilmDescription")
+                .releaseDate(LocalDate.of(2000, 1, 1))
+                .duration(120)
+                .build();
 
         assertThrows(AlreadyExistsException.class, () -> filmController.createFilm(film1), "Должен выбросить исключение");
 
@@ -42,14 +54,34 @@ public class FilmControllerTest {
         final String moreThan200Chars = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
                 "Donec eu dolor in turpis semper sollicitudin. Sed sollicitudin magna sed metus eleifend tempor. " +
                 "Praesent mollis arcu in mollis aliquet. Nunc ligula.";
-        Film film1 = new Film(0, "Test", moreThan200Chars,
-                LocalDate.of(2000, 1, 1), 120);
-        Film film2 = new Film(0, null, "TestFilm2Description",
-                LocalDate.of(2000, 1, 1), 120);
-        Film film3 = new Film(0, "TestFilm3", "TestFilm3Description",
-                LocalDate.of(1000, 1, 1), 120);
-        Film film4 = new Film(0, "TestFilm4", "TestFilm4Description",
-                LocalDate.of(2000, 1, 1), 0);
+        Film film1 = Film.builder()
+                .id(0)
+                .name("TestFilm1")
+                .description(moreThan200Chars)
+                .releaseDate(LocalDate.of(2000, 1, 1))
+                .duration(120)
+                .build();
+        Film film2 = Film.builder()
+                .id(0)
+                .name(null)
+                .description("TestFilm2Description")
+                .releaseDate(LocalDate.of(2000, 1, 1))
+                .duration(120)
+                .build();
+        Film film3 = Film.builder()
+                .id(0)
+                .name("TestFilm3")
+                .description("TestFilm3Description")
+                .releaseDate(LocalDate.of(1000, 1, 1))
+                .duration(120)
+                .build();
+        Film film4 = Film.builder()
+                .id(0)
+                .name("TestFilm4")
+                .description("TestFilm4Description")
+                .releaseDate(LocalDate.of(2000, 1, 1))
+                .duration(0)
+                .build();
 
         assertThrows(ValidationException.class, () -> filmController.createFilm(film1), "Должен выбросить исключение");
         assertThrows(ValidationException.class, () -> filmController.createFilm(film2), "Должен выбросить исключение");
@@ -59,15 +91,33 @@ public class FilmControllerTest {
 
     @Test
     void updateFilmTest() {
-        filmController.createFilm(new Film(0, "TestFilm", "TestFilmDescription",
-                LocalDate.of(2000, 1, 1), 120));
-        Film nonUpdatable = new Film(Integer.MAX_VALUE, "Non Updatable", "TestFilmDescription",
-                LocalDate.of(2000, 1, 1), 120);
+        Film updatable = Film.builder()
+                .id(0)
+                .name("TestFilm")
+                .description("TestFilmDescription")
+                .releaseDate(LocalDate.of(2000, 1, 1))
+                .duration(120)
+                .build();
+        filmController.createFilm(updatable);
+        Film nonUpdatable = Film.builder()
+                .id(Integer.MAX_VALUE)
+                .name("Non Updatable")
+                .description("TestFilmDescription")
+                .releaseDate(LocalDate.of(2000, 1, 1))
+                .duration(120)
+                .build();
 
         assertThrows(DoesNotExistsException.class, () -> filmController.updateFilm(nonUpdatable), "Должен выбросить исключение");
 
-        Film updatedFilm = filmController.updateFilm(new Film(0, "updatedTestFilm", "updatedTestFilmDescription",
-                LocalDate.of(2001, 1, 1), 110));
+        Film updatedFilm = filmController.updateFilm(
+                Film.builder()
+                        .id(0)
+                        .name("updatedTestFilm")
+                        .description("updatedTestFilmDescription")
+                        .releaseDate(LocalDate.of(2000, 1, 1))
+                        .duration(110)
+                        .build()
+        );
 
         assertEquals(1, filmController.findAll().size(), "Должен быть только 1 фильм");
         assertEquals(updatedFilm, filmController.findAll().get(0));
@@ -79,8 +129,16 @@ public class FilmControllerTest {
 
         assertTrue(emptyFilmList.isEmpty(), "Фильмы пока не были добавлены");
 
-        Film film1 = filmController.createFilm(new Film(0, "TestFilm", "TestFilmDescription",
-                LocalDate.of(2000, 1, 1), 120));
+        Film film1 = Film.builder()
+                .id(0)
+                .name("TestFilm")
+                .description("TestFilmDescription")
+                .releaseDate(LocalDate.of(2000, 1, 1))
+                .duration(120)
+                .build();
+
+        filmController.createFilm(film1);
+
         assertEquals(1, filmController.findAll().size(), "Неверный размер списка фильмов");
         assertEquals(film1, filmController.findAll().get(0), "Сохранен не тот фильм");
     }

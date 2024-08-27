@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -8,12 +9,13 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.Storage;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FilmService {
-
     private final Storage<Film> filmStorage;
     private final Storage<User> userStorage;
 
@@ -33,16 +35,14 @@ public class FilmService {
         return filmStorage.update(film);
     }
 
-    public void addLike(Integer filmId, Integer userId) {
+    public void add(Integer filmId, Integer userId) {
         checkFilmAndUserId(filmId, userId);
-        Film film = filmStorage.findById(filmId);
-        film.getLikes().add(userId);
+        filmStorage.add(filmId, userId);
     }
 
-    public void removeLike(Integer filmId, Integer userId) {
+    public void remove(Integer filmId, Integer userId) {
         checkFilmAndUserId(filmId, userId);
-        Film film = filmStorage.findById(filmId);
-        film.getLikes().remove(userId);
+        filmStorage.remove(filmId, userId);
     }
 
     public List<Film> findTopLiked(int count) {
