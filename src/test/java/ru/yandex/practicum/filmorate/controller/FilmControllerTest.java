@@ -129,14 +129,14 @@ public class FilmControllerTest {
         );
         filmController.createFilm(updatable);
         Film nonUpdatable = new Film(
-                Integer.MAX_VALUE
-                ,"Non Updatable"
-                ,"TestFilmDescription"
-                ,LocalDate.of(2000, 1, 1)
-                ,120
-                ,new Mpa(1, "G")
-                ,new HashSet<>()
-                ,new HashSet<>()
+                Integer.MAX_VALUE,
+                "Non Updatable",
+                "TestFilmDescription",
+                LocalDate.of(2000, 1, 1),
+                120,
+                new Mpa(1, "G"),
+                new HashSet<>(),
+                new HashSet<>()
         );
 
         assertThrows(DoesNotExistsException.class, () -> filmController.updateFilm(nonUpdatable), "Должен выбросить исключение");
