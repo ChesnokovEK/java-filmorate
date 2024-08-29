@@ -1,13 +1,10 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.jdbc.Sql;
 import ru.yandex.practicum.filmorate.dao.Impl.UserDbStorage;
@@ -15,7 +12,6 @@ import ru.yandex.practicum.filmorate.exception.AlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -40,7 +36,7 @@ public class UserControllerTest {
 
     @Test
     void createUser() {
-        User user = new User (
+        User user = new User(
                 0,
                 "test@testmail.test",
                 "testUserLogin",
@@ -51,7 +47,7 @@ public class UserControllerTest {
 
         assertEquals(user, userController.createUser(user));
 
-        User user1 = new User (
+        User user1 = new User(
                 1,
                 "test@testmail.test",
                 "testUserLogin",
@@ -67,7 +63,7 @@ public class UserControllerTest {
 
     @Test
     void userValidationTest() {
-        User user1 = new User (
+        User user1 = new User(
                 0,
                 null,
                 "testUserLogin",
@@ -75,7 +71,7 @@ public class UserControllerTest {
                 LocalDate.of(2000, 1, 1),
                 new HashSet<>()
         );
-        User user2 = new User (
+        User user2 = new User(
                 0,
                 "testtestmail.test",
                 "testUserLogin",
@@ -83,7 +79,7 @@ public class UserControllerTest {
                 LocalDate.of(2000, 1, 1),
                 new HashSet<>()
         );
-        User user3 = new User (
+        User user3 = new User(
                 0,
                 "test@testmail.test",
                 null,
@@ -91,7 +87,7 @@ public class UserControllerTest {
                 LocalDate.of(2000, 1, 1),
                 new HashSet<>()
         );
-        User user4 = new User (
+        User user4 = new User(
                 0,
                 "test@testmail.test",
                 "testUser Login",
@@ -100,7 +96,7 @@ public class UserControllerTest {
                 new HashSet<>()
         );
 
-        User user5 = new User (
+        User user5 = new User(
                 0,
                 "test@testmail.test",
                 "testUserLogin",
@@ -118,7 +114,7 @@ public class UserControllerTest {
 
     @Test
     void userUpdateTest() {
-        User updatable = new User (
+        User updatable = new User(
                 0,
                 "test@testmail.test",
                 "testUserLogin",
@@ -129,7 +125,7 @@ public class UserControllerTest {
 
         userController.createUser(updatable);
 
-        User nonUpdatable = new User (
+        User nonUpdatable = new User(
                 Integer.MAX_VALUE,
                 "nonUpdatable@testmail.test",
                 "nonUpdatabletestUserLogin",
@@ -140,7 +136,7 @@ public class UserControllerTest {
 
         assertThrows(DoesNotExistsException.class, () -> userController.updateUser(nonUpdatable), "Должен выбросить исключение");
 
-        User updatedUser = new User (
+        User updatedUser = new User(
                 0,
                 "updated@testmail.test",
                 "updatedUserLogin",

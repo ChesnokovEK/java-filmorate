@@ -1,18 +1,13 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 import ru.yandex.practicum.filmorate.dao.Impl.FilmDbStorage;
-import ru.yandex.practicum.filmorate.exception.AlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -72,7 +67,7 @@ public class FilmControllerTest {
         final String moreThan200Chars = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
                 "Donec eu dolor in turpis semper sollicitudin. Sed sollicitudin magna sed metus eleifend tempor. " +
                 "Praesent mollis arcu in mollis aliquet. Nunc ligula.";
-        Film film1 = new Film (
+        Film film1 = new Film(
                 0,
                 "TestFilm",
                 moreThan200Chars,
@@ -83,7 +78,7 @@ public class FilmControllerTest {
                 new HashSet<>()
         );
 
-        Film film2 = new Film (
+        Film film2 = new Film(
                 0,
                 null,
                 "TestFilm2Description",
@@ -93,7 +88,7 @@ public class FilmControllerTest {
                 new HashSet<>(),
                 new HashSet<>()
         );
-        Film film3 = new Film (
+        Film film3 = new Film(
                 0,
                 "TestFilm3",
                 "TestFilm3Description",
@@ -103,7 +98,7 @@ public class FilmControllerTest {
                 new HashSet<>(),
                 new HashSet<>()
         );
-        Film film4 = new Film (
+        Film film4 = new Film(
                 0,
                 "TestFilm4",
                 "TestFilm4Description",
@@ -122,7 +117,7 @@ public class FilmControllerTest {
 
     @Test
     void updateFilmTest() {
-        Film updatable = new Film (
+        Film updatable = new Film(
                 0,
                 "TestFilm",
                 "TestFilmDescription",
