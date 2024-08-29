@@ -12,7 +12,7 @@ public interface GenreDbStorage {
 
     List<Genre> findByFilmId(int filmId);
 
-    void addGenreToTheFilm(int filmId, int genreId);
+    void addGenreToTheFilm(int filmId, List<Genre> genreList);
 
     void updateFilmGenre(Film film);
 }

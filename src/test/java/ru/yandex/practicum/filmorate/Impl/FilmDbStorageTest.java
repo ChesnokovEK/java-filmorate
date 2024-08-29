@@ -51,6 +51,7 @@ public class FilmDbStorageTest {
                 .description("TestFilm6Description")
                 .releaseDate(LocalDate.of(2000, 1, 1))
                 .mpa(new Mpa(1, "G"))
+                .genres(new HashSet<>())
                 .duration(120)
                 .build();
 

@@ -1,16 +1,17 @@
 package ru.yandex.practicum.filmorate.dao.Impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.GenreDbStorage;
-import ru.yandex.practicum.filmorate.exception.DoesNotExistsException;
 import ru.yandex.practicum.filmorate.exception.UnexpectedException;
+import ru.yandex.practicum.filmorate.mappers.GenresRowMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,41 +19,57 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GenreDbStorageImpl implements GenreDbStorage {
     private final JdbcTemplate jdbcTemplate;
+    private final GenresRowMapper genresRowMapper;
 
     @Override
     public List<Genre> findAll() {
         String sql = "SELECT * FROM genres ORDER BY genre_id";
-        return jdbcTemplate.query(sql, genreRowMapper());
+        return jdbcTemplate.query(sql, genresRowMapper);
     }
 
     @Override
     public Genre findById(int id) {
-        try {
-            String sql = "SELECT * FROM genres WHERE genre_id=?";
-            return jdbcTemplate.queryForObject(sql, genreRowMapper(), id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new DoesNotExistsException("Жанр с запрошенным идентификатором не найден");
-        }
+        String sql = "SELECT * FROM genres WHERE genre_id=?";
+        return jdbcTemplate.queryForObject(sql, genresRowMapper, id);
     }
 
     @Override
     public List<Genre> findByFilmId(int filmId) {
-        List<Integer> idList = findIdsByFilm(filmId);
-        List<Genre> genres = new ArrayList<>();
-        for (int id : idList) {
-            Genre genre = findById(id);
-            genres.add(genre);
-        }
-        return genres;
+        String sql = "SELECT * FROM film_genres WHERE film_id=?";
+        return jdbcTemplate.query(sql, genresRowMapper);
     }
 
     @Override
-    public void addGenreToTheFilm(int filmId, int genreId) {
+    public void addGenreToTheFilm(int filmId, List<Genre> genres) {
         String sql = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
-        int updatedRow = jdbcTemplate.update(sql, filmId, genreId);
-        if (updatedRow != 1) {
-            throw new UnexpectedException("Произошла ошибка при добавлении жанра");
-        }
+
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Genre genre = genres.get(i);
+                ps.setInt(1, filmId);
+                ps.setInt(2, genre.getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return genres.size();
+            }
+        });
+//
+//        StringBuilder sb = new StringBuilder(sql);
+//        for (int i = 0; i < genres.size(); i++) {
+//            sb.append("VALUES (").append(filmId).append(", ").append(genres.get(i).getId()).append(")");
+//
+//            if (i < genres.size() - 1) {
+//                sb.append(", ");
+//                continue;
+//            }
+//
+//            sb.append(";");
+//        }
+//
+//        jdbcTemplate.execute(sb.toString());
     }
 
     @Override
@@ -65,20 +82,6 @@ public class GenreDbStorageImpl implements GenreDbStorage {
 
         List<Genre> filmGenre = new ArrayList<>(film.getGenres());
 
-        for (Genre genre : filmGenre) {
-            addGenreToTheFilm(film.getId(), genre.getId());
-        }
-    }
-
-    private RowMapper<Genre> genreRowMapper() {
-        return (rs, rowNum) -> new Genre(
-                rs.getInt("genre_id"),
-                rs.getString("name")
-        );
-    }
-
-    private List<Integer> findIdsByFilm(int filmId) {
-        String sql = "SELECT * FROM film_genres WHERE film_id=?";
-        return jdbcTemplate.query(sql, (resultSet, rowNum) -> resultSet.getInt("genre_id"), filmId);
+        addGenreToTheFilm(film.getId(), filmGenre);
     }
 }
