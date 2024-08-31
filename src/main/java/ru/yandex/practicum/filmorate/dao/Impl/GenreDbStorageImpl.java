@@ -55,20 +55,6 @@ public class GenreDbStorageImpl implements GenreDbStorage {
                 return genres.size();
             }
         });
-//
-//        StringBuilder sb = new StringBuilder(sql);
-//        for (int i = 0; i < genres.size(); i++) {
-//            sb.append("VALUES (").append(filmId).append(", ").append(genres.get(i).getId()).append(")");
-//
-//            if (i < genres.size() - 1) {
-//                sb.append(", ");
-//                continue;
-//            }
-//
-//            sb.append(";");
-//        }
-//
-//        jdbcTemplate.execute(sb.toString());
     }
 
     @Override

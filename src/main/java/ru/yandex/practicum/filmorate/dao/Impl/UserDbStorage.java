@@ -14,7 +14,6 @@ import ru.yandex.practicum.filmorate.storage.Storage;
 import java.util.*;
 
 @Component
-@Primary
 @RequiredArgsConstructor
 @Slf4j
 public class UserDbStorage implements Storage<User> {
