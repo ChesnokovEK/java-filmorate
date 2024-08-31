@@ -12,4 +12,8 @@ public interface Storage<T> {
 
     T findById(int id);
 
+    T add(int toId, int whichId);
+
+    T remove(int fromId, int whichId);
+
 }
